@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mail_app/ui/check_mail.dart';
+import 'package:flutter_mail_app/ui/create_account_ui.dart';
 import 'package:flutter_mail_app/ui/login_ui.dart';
 
 void main() {
@@ -9,41 +11,31 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-        // This makes the visual density adapt to the platform that you run
-        // the app on. For desktop platforms, the controls will be smaller and
-        // closer together (more dense) than on mobile platforms.
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: LogIn(),
+    return MaterialApp(debugShowCheckedModeBanner: false,
+          theme: ThemeData(accentColor: Colors.orangeAccent,primaryColor: Colors.deepOrangeAccent),
+      home: MyHomePage(),
+        routes:  <String, WidgetBuilder>{
+          '/create_account': (BuildContext context) => CreateAccount(),
+          '/login': (BuildContext context) => LogIn(),
+          '/check_mail': (BuildContext context) => CheckMail(),
+        },
     );
   }
 }
 
-// class MyHomePage extends StatefulWidget {
-//
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-//
-// class _MyHomePageState extends State<MyHomePage> {
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//
-//     return Scaffold(appBar: AppBar(title: Text('Hello'),),);
-//   }
-// }
+class MyHomePage extends StatefulWidget {
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+    body: LogIn(),);
+  }
+}

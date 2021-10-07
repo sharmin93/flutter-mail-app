@@ -46,11 +46,13 @@ class APICall {
    });
    return completer.future;
   }
+
  Future<LogInResponse> logIn(dynamic body){
    var completer=Completer<LogInResponse>();
    HttpClient.post(logInUrl,body).then((response) {
      if (response.statusCode>= 200 && response.statusCode<=299) {
        var loginResponse = LogInResponse.fromJson(response.data);
+       print('loginResponse ${loginResponse}');
        loginResponse.statusCode = response.statusCode;
        loginResponse.success=true;
        completer.complete(loginResponse);
