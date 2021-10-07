@@ -37,6 +37,7 @@ dev_dependencies:
     sdk: flutter
   rxdart: ^0.24.1
   bloc: ^5.0.0
+  shared_preferences:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

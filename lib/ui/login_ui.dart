@@ -2,13 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mail_app/bloc/login_bloc.dart';
 import 'package:flutter_mail_app/response_model/logIn_response_model.dart';
+import 'package:flutter_mail_app/response_model/password_model.dart';
 import 'package:flutter_mail_app/service_request/service_call.dart';
 
 class LogIn extends StatelessWidget {
   final logInBloc=LogInBloc();
-  bool _hidePassword = true;
+
+
   @override
   Widget build(BuildContext context) {
+    logInBloc.changedPassword.call(PasswordModel());
     return  Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -24,7 +27,8 @@ class LogIn extends StatelessWidget {
                   SizedBox(height: 8,),
                   /// Email
                   SizedBox(height: MediaQuery.of(context).size.height*.1,),
-                  StreamBuilder<String>(stream: logInBloc.email,
+                  StreamBuilder<String>(
+                    stream: logInBloc.email,
                     builder: (context, emailSnapshot){
                     return  Container(
                         decoration: BoxDecoration(
@@ -56,20 +60,23 @@ class LogIn extends StatelessWidget {
                     children: [
                       Expanded(
                         child
-                            : StreamBuilder<String>(stream: logInBloc.password,
+                            : StreamBuilder<PasswordModel>(
+                          stream: logInBloc.password,
                           builder: (context, snapshot){
-                              return Container(
+                              return snapshot.hasData ?
+                                Container(
                                   decoration: BoxDecoration(
                                       color: Color(0xFFF2F2F2), border: Border.all(color: Colors.deepOrangeAccent),
                                       borderRadius: BorderRadius.circular(8.0)
                                   ),
                                   child: TextField(
                                     onChanged: (password){
-                                      logInBloc.changedPassword.call(password);
+                                      snapshot.data.password=password;
+                                      logInBloc.changedPassword.call( snapshot.data);
                                     },
+                                    obscureText: snapshot.data.show,
                                     decoration: InputDecoration(
                                       contentPadding: EdgeInsets.all(22.0),
-                                      border: InputBorder.none,
                                       labelText: 'Password',
                                       labelStyle: TextStyle(
                                         fontFamily: 'OpenSans',
@@ -79,14 +86,14 @@ class LogIn extends StatelessWidget {
                                       hintText: 'Please enter password',
                                       suffixIcon: IconButton(
                                         icon: Icon(
-                                          _hidePassword
+                                          snapshot.data.show
                                               ? Icons.visibility
                                               : Icons.visibility_off,
                                           color: Color(0xff353B50),
                                         ),
                                         onPressed: () {
-                                            _hidePassword = !_hidePassword;
-
+                                          snapshot.data.show = ! snapshot.data.show ;
+                                          logInBloc.changedPassword.call( snapshot.data);
                                           // setState(() {
                                           //   _hidePassword = !_hidePassword;
                                           // });
@@ -94,7 +101,7 @@ class LogIn extends StatelessWidget {
                                       ),
                                     ),
                                   )
-                              );
+                              ):Container();
                         },
                             ),
                       ),
