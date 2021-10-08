@@ -44,8 +44,7 @@ class APICall {
        var createAccountResponse=CreateAccountResponse();
        createAccountResponse.statusCode = response.statusCode;
        createAccountResponse.success=false;
-       createAccountResponse.errorTitle=response.data['hydra:title'];
-       createAccountResponse.errorMessage=response.data['hydra:description'];
+       createAccountResponse.errorMessage=json.decode(response.data)['hydra:description'];
        completer.complete(createAccountResponse);
      }
    });

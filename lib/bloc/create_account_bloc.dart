@@ -8,10 +8,11 @@ class CreateAccountBloc implements BaseBloc{
   final _accountCreateController = BehaviorSubject<CreateAccountResponse>();
   final _passwordController = BehaviorSubject<String>();
   final _emailController = BehaviorSubject<String>();
-
+  final _showPassword = BehaviorSubject<bool>();
 
   Function(CreateAccountResponse) get changedAccountCreate => _accountCreateController.sink.add;
-
+  Function(bool) get changedShow => _showPassword.sink.add;
+  Stream<bool> get show => _showPassword.stream;
   Function(String) get changedPassword => _passwordController.sink.add;
 
   Function(String) get changedEmail => _emailController.sink.add;
@@ -24,12 +25,6 @@ class CreateAccountBloc implements BaseBloc{
 
   createAccountButton() async {
     String emailValue = _emailController.stream.value.toLowerCase();
-//     bool emailValid =RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z]+(\.[a-zA-Z]+)*\.[a-zA-Z]+[a-zA-Z]+$").hasMatch(emailValue);
-// //    RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(emailValue);
-//     if(emailValid==false){
-//       _logInController.sink.addError('Email formation is not correct');
-//       return  null;
-//     }
     String passValue = _passwordController.stream.value;
     var domainResponse=await APICall().getDomain();
     if(!emailValue.endsWith(domainResponse.hydraMember[0].domain)){
@@ -42,9 +37,9 @@ class CreateAccountBloc implements BaseBloc{
       "password": passValue
     };
     CreateAccountResponse   res= await apiCall.createAccount(createAccountData);
-    print('logInRes${res}');
+
     if(res.success){
-      print('logIn SuccessFull ${res.success}');
+      print('sign up SuccessFull ${res.success}');
     }else{
       print('error ${res.errorTitle}');
       print('error mesage${res.errorMessage}');
@@ -58,6 +53,7 @@ class CreateAccountBloc implements BaseBloc{
     _accountCreateController.close();
     _passwordController.close();
     _emailController.close();
+    _showPassword.close();
   }
 
 }

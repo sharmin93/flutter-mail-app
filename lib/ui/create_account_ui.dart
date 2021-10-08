@@ -10,7 +10,7 @@ class CreateAccount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+accountCreateBloc.changedShow.call(true);
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -71,42 +71,45 @@ class CreateAccount extends StatelessWidget {
                         child: StreamBuilder<String>(
                             stream: accountCreateBloc.password,
                             builder: (context, snapshot) {
-                              return Container(
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFF2F2F2),
-                                      border: Border.all(
-                                          color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.circular(8.0)),
-                                  child: TextField(
-                                    onChanged: (password) {
-                                      accountCreateBloc.changedPassword
-                                          .call(password);
-                                    },
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(22.0),
-                                      border: InputBorder.none,
-                                      labelText: 'Password',
-                                      labelStyle: TextStyle(
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 12,
-                                        color: Color(0xFF353B50),
-                                      ),
-                                      hintText: 'Please enter password',
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _hidePassword
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                          color: Color(0xff353B50),
-                                        ),
-                                        onPressed: () {
-                                          // setState(() {
-                                          //   _hidePassword = !_hidePassword;
-                                          // });
+                              return StreamBuilder<bool>(
+                                stream:  accountCreateBloc.show,
+                                builder: (context, showSnapshot) {
+                                  return Container(
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFF2F2F2),
+                                          border: Border.all(
+                                              color: Colors.deepOrangeAccent),
+                                          borderRadius: BorderRadius.circular(8.0)),
+                                      child: TextField(
+                                        onChanged: (password) {
+                                          accountCreateBloc.changedPassword.call(password);
                                         },
-                                      ),
-                                    ),
-                                  ));
+                                        obscureText: showSnapshot.hasData && showSnapshot.data,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(22.0),
+                                          border: InputBorder.none,
+                                          labelText: 'Password',
+                                          labelStyle: TextStyle(
+                                            fontFamily: 'OpenSans',
+                                            fontSize: 12,
+                                            color: Color(0xFF353B50),
+                                          ),
+                                          hintText: 'Please enter password',
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              showSnapshot.hasData && showSnapshot.data
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
+                                              color: Color(0xff353B50),
+                                            ),
+                                            onPressed: () {
+                                              accountCreateBloc.changedShow.call(!showSnapshot.data);
+                                            },
+                                          ),
+                                        ),
+                                      ));
+                                }
+                              );
                             }),
                       ),
                     ],
@@ -137,7 +140,7 @@ class CreateAccount extends StatelessWidget {
                                           CreateAccountResponse resp =
                                               await accountCreateBloc
                                                   .createAccountButton();
-                                          if (resp.success) {
+                                          if (resp != null && resp.success) {
                                             Navigator.pushNamed(
                                                 context, '/login');
                                           }
