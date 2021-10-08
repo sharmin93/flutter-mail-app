@@ -9,27 +9,38 @@ class MailDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  var  receivedData = ModalRoute.of(context).settings.arguments;
-  APICall().getMessageDetails(receivedData).then((value) {
-    messageDetailsBloc.changedMessagesDetails.call(value);
-  });
+    var receivedData = ModalRoute.of(context).settings.arguments;
+    APICall().getMessageDetails(receivedData).then((value) {
+      messageDetailsBloc.changedMessagesDetails.call(value);
+    });
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Mail details'),
       ),
-      body: SingleChildScrollView(child: StreamBuilder<MessageDetailsModel>(
-        stream: messageDetailsBloc.messagesDetails,
-        builder: (context, snapshot) {
-          return snapshot.hasData? Column(children: [
-            Text('Form ${snapshot.data.from.name}'),
-            SizedBox(height: 10,),
-            Text('Subject: ${snapshot.data.subject}'),
-            SizedBox(height: 10,),
-            Text('${snapshot.data.text}'),
-          ],):Center(child: CircularProgressIndicator());
-        }
-      )),
+      body: SingleChildScrollView(
+          child: StreamBuilder<MessageDetailsModel>(
+              stream: messageDetailsBloc.messagesDetails,
+              builder: (context, snapshot) {
+                return snapshot.hasData
+                    ? Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('Form  ${snapshot.data.from.name}',style: TextStyle(fontSize: 16, color: Color(0xff371D32)),),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text('Subject: ${snapshot.data.subject}',style:TextStyle(fontSize: 16, color: Color(0xff371D32)) ,),
+                            SizedBox(
+                              height: 15,
+                            ),
+                            Text('${snapshot.data.text}',style: TextStyle(fontSize: 16, color: Color(0xff371D32)),),
+                          ],
+                        ),
+                    )
+                    : Center(child: CircularProgressIndicator());
+              })),
     );
   }
 }

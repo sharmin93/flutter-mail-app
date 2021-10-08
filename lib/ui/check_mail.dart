@@ -17,13 +17,23 @@ class CheckMail extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     refresh();
-    return Scaffold(appBar: AppBar(title: Row(
+    return Scaffold(appBar: AppBar(
+      leading: new IconButton(
+      icon: new Icon(Icons.arrow_back),
+      onPressed: () {
+        Navigator.pushNamed(context, '/login');
+      },
+    ),
+      title: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text('Inbox',),
-        SizedBox(width: 10,),
+
         InkWell(onTap:(){
           refresh();
         },child: Text('Refresh',)),
+        InkWell(onTap:(){
+
+        },child: Text('Log out',)),
       ],
     ),centerTitle: true,),
       body: StreamBuilder<MessagesResponseModel>(
