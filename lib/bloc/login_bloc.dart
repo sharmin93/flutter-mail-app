@@ -9,27 +9,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LogInBloc implements BaseBloc {
   //controller//
   final _logInController = BehaviorSubject<LogInResponse>();
-  final _passwordController = BehaviorSubject<PasswordModel>();
+  final _passwordController = BehaviorSubject<String>();
+  final _showPassword = BehaviorSubject<bool>();
   final _emailController = BehaviorSubject<String>();
 
   //sink data//
   Function(LogInResponse) get changedField => _logInController.sink.add;
 
-  Function(PasswordModel) get changedPassword => _passwordController.sink.add;
+  Function(String) get changedPassword => _passwordController.sink.add;
+  Function(bool) get changedShow => _showPassword.sink.add;
 
   Function(String) get changedEmail => _emailController.sink.add;
 
   Stream<LogInResponse> get logInButton => _logInController.stream;
 
-  Stream<PasswordModel> get password => _passwordController.stream;
+  Stream<String> get password => _passwordController.stream;
   Stream<String> get email => _emailController.stream;
+  Stream<bool> get show => _showPassword.stream;
 
 
   signInButton() async {
     String emailValue = _emailController.stream.value.toLowerCase();
     final prefs = await SharedPreferences.getInstance();
 
-    String passValue = _passwordController.stream.value.password;
+    String passValue = _passwordController.stream.value;
+    print(passValue);
     var apiCall=APICall();
     var logInData={
       "address": emailValue.toLowerCase(),
@@ -51,6 +55,7 @@ class LogInBloc implements BaseBloc {
 
   @override
   void dispose() {
+    _showPassword.close();
     _logInController.close();
     _passwordController.close();
    _emailController.close();

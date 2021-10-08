@@ -38,6 +38,7 @@ dev_dependencies:
   rxdart: ^0.24.1
   bloc: ^5.0.0
   shared_preferences:
+  auto_size_text: ^2.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

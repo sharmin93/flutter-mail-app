@@ -11,7 +11,7 @@ class LogIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logInBloc.changedPassword.call(PasswordModel());
+    logInBloc.changedShow.call(true);
     return  Scaffold(
       body: Center(
         child: SingleChildScrollView(
@@ -60,48 +60,48 @@ class LogIn extends StatelessWidget {
                     children: [
                       Expanded(
                         child
-                            : StreamBuilder<PasswordModel>(
+                            : StreamBuilder<String>(
                           stream: logInBloc.password,
                           builder: (context, snapshot){
-                              return snapshot.hasData ?
-                                Container(
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFF2F2F2), border: Border.all(color: Colors.deepOrangeAccent),
-                                      borderRadius: BorderRadius.circular(8.0)
-                                  ),
-                                  child: TextField(
-                                    onChanged: (password){
-                                      snapshot.data.password=password;
-                                      logInBloc.changedPassword.call( snapshot.data);
-                                    },
-                                    obscureText: snapshot.data.show,
-                                    decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.all(22.0),
-                                      labelText: 'Password',
-                                      labelStyle: TextStyle(
-                                        fontFamily: 'OpenSans',
-                                        fontSize: 12,
-                                        color: Color(0xFF353B50),
+                            return
+                                StreamBuilder<bool>(
+                                  stream: logInBloc.show,
+                                  builder: (context, showSnapshot) {
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFF2F2F2), border: Border.all(color: Colors.deepOrangeAccent),
+                                          borderRadius: BorderRadius.circular(8.0)
                                       ),
-                                      hintText: 'Please enter password',
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          snapshot.data.show
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                          color: Color(0xff353B50),
-                                        ),
-                                        onPressed: () {
-                                          snapshot.data.show = ! snapshot.data.show ;
-                                          logInBloc.changedPassword.call( snapshot.data);
-                                          // setState(() {
-                                          //   _hidePassword = !_hidePassword;
-                                          // });
+                                      child: TextField(
+                                        onChanged: (password){
+                                          logInBloc.changedPassword.call(password);
                                         },
-                                      ),
-                                    ),
-                                  )
-                              ):Container();
+                                        obscureText: showSnapshot.hasData && showSnapshot.data,
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.all(22.0),
+                                          labelText: 'Password',
+                                          labelStyle: TextStyle(
+                                            fontFamily: 'OpenSans',
+                                            fontSize: 12,
+                                            color: Color(0xFF353B50),
+                                          ),
+                                          hintText: 'Please enter password',
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              showSnapshot.hasData && showSnapshot.data
+                                                  ? Icons.visibility
+                                                  : Icons.visibility_off,
+                                              color: Color(0xff353B50),
+                                            ),
+                                            onPressed: () {
+                                              logInBloc.changedShow.call(!showSnapshot.data);
+                                            },
+                                          ),
+                                        ),
+                                      )
+                              );
+                                  }
+                                );
                         },
                             ),
                       ),
@@ -130,7 +130,8 @@ class LogIn extends StatelessWidget {
 
                                         LogInResponse  resp= await logInBloc.signInButton();
                                        if(resp.success){
-                                        Navigator.pushNamed(context, '/check_mail');}
+                                        Navigator.pushNamedAndRemoveUntil(context,'/check_mail',(Route<dynamic> route) => false);
+                                       }
 
                                       },
                                       child: Text('Log In',
